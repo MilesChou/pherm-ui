@@ -1,10 +1,8 @@
 {
-    "name": "mileschou/composer-template",
+    "name": "mileschou/phcui",
     "license": "MIT",
-    "description": "The template for create Composer project",
-    "keywords": [
-        "template"
-    ],
+    "description": "",
+    "type": "library",
     "authors": [
         {
             "name": "MilesChou",
@@ -12,7 +10,9 @@
         }
     ],
     "require": {
-        "php": ">=7.0"
+        "php": ">=7.1",
+        "ext-posix": "*",
+        "php-school/terminal": "^0.2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^6 | ^7 | ^8",
@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "MilesChou\\Template\\": "src"
+            "MilesChou\\Phcui\\": "src"
         }
     },
     "autoload-dev": {
