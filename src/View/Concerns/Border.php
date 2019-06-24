@@ -7,22 +7,14 @@ use OutOfRangeException;
 trait Border
 {
     /**
-     * @var array [horizontal, vertical, top-left, top-right, bottom-left, bottom-right]
+     * @var bool
      */
-    private $border = [];
+    private $border = true;
 
     /**
-     * @param int $key
-     * @return string
+     * @var array [horizontal, vertical, top-left, top-right, bottom-left, bottom-right]
      */
-    public function getBorder(int $key): string
-    {
-        if (isset($this->border[$key])) {
-            return $this->border[$key];
-        }
-
-        return static::getBorderDefault($key);
-    }
+    private $borderChars = [];
 
     /**
      * @param int $key
@@ -40,16 +32,51 @@ trait Border
     }
 
     /**
+     * @return static
+     */
+    public function disableBorder()
+    {
+        $this->border = false;
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function enableBorder()
+    {
+        $this->border = true;
+        return $this;
+    }
+
+    /**
+     * @param int $key
+     * @return string
+     */
+    public function getBorderChar(int $key): string
+    {
+        return $this->borderChars[$key] ?? static::getBorderDefault($key);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasBorder(): bool
+    {
+        return $this->border;
+    }
+
+    /**
      * @param int|array $key
      * @param string $char
      * @return static
      */
-    public function setBorder($key, $char = null)
+    public function setBorderChar($key, $char = null)
     {
         if (is_array($key)) {
-            $this->border = $key;
+            $this->borderChars = $key;
         } else {
-            $this->border[$key] = $char;
+            $this->borderChars[$key] = $char;
         }
 
         return $this;
@@ -61,7 +88,7 @@ trait Border
      */
     public function useAsciiBorder()
     {
-        return $this->setBorder(['-', '|', '+', '+', '+', '+']);
+        return $this->setBorderChar(['-', '|', '+', '+', '+', '+']);
     }
 
     /**
@@ -69,6 +96,6 @@ trait Border
      */
     public function useDefaultBorder()
     {
-        return $this->setBorder([]);
+        return $this->setBorderChar([]);
     }
 }

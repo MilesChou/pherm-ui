@@ -112,15 +112,15 @@ class View
 
         if ($sizeX > 0) {
             foreach (range(1, $sizeX) as $x) {
-                $this->write(0, (int)$x, $this->getBorder(0));
-                $this->write($sizeY + 1, (int)$x, $this->getBorder(0));
+                $this->write(0, (int)$x, $this->getBorderChar(0));
+                $this->write($sizeY + 1, (int)$x, $this->getBorderChar(0));
             }
         }
 
         if ($sizeY > 0) {
             foreach (range(1, $sizeY) as $y) {
-                $this->write((int)$y, 0, $this->getBorder(1));
-                $this->write((int)$y, $sizeX + 1, $this->getBorder(1));
+                $this->write((int)$y, 0, $this->getBorderChar(1));
+                $this->write((int)$y, $sizeX + 1, $this->getBorderChar(1));
             }
         }
     }
@@ -129,10 +129,10 @@ class View
     {
         [$sizeY, $sizeX] = $this->size();
 
-        $this->write(0, 0, $this->getBorder(2));
-        $this->write(0, $sizeX + 1, $this->getBorder(3));
-        $this->write($sizeY + 1, 0, $this->getBorder(4));
-        $this->write($sizeY + 1, $sizeX + 1, $this->getBorder(5));
+        $this->write(0, 0, $this->getBorderChar(2));
+        $this->write(0, $sizeX + 1, $this->getBorderChar(3));
+        $this->write($sizeY + 1, 0, $this->getBorderChar(4));
+        $this->write($sizeY + 1, $sizeX + 1, $this->getBorderChar(5));
     }
 
     public function frameSize(): array

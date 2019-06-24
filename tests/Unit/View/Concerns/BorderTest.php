@@ -21,15 +21,13 @@ class BorderTest extends TestCase
     /**
      * @test
      */
-    public function shouldReturnDefaultBorderContent()
+    public function shouldReturnDefaultBorderSettingAndContent()
     {
-        $this->assertSame('┐', $this->target->getBorder(3));
-        $this->assertSame('│', $this->target->getBorder(1));
-        $this->assertSame('└', $this->target->getBorder(4));
+        $this->assertTrue($this->target->hasBorder());
 
-        $this->assertSame('┐', Border::getBorderDefault(3));
-        $this->assertSame('│', Border::getBorderDefault(1));
-        $this->assertSame('└', Border::getBorderDefault(4));
+        $this->assertSame('┐', $this->target->getBorderChar(3));
+        $this->assertSame('│', $this->target->getBorderChar(1));
+        $this->assertSame('└', $this->target->getBorderChar(4));
     }
 
     /**
@@ -48,15 +46,15 @@ class BorderTest extends TestCase
     {
         $this->target->useAsciiBorder();
 
-        $this->assertSame('+', $this->target->getBorder(3));
-        $this->assertSame('|', $this->target->getBorder(1));
-        $this->assertSame('+', $this->target->getBorder(4));
+        $this->assertSame('+', $this->target->getBorderChar(3));
+        $this->assertSame('|', $this->target->getBorderChar(1));
+        $this->assertSame('+', $this->target->getBorderChar(4));
 
         $this->target->useDefaultBorder();
 
-        $this->assertSame('┐', $this->target->getBorder(3));
-        $this->assertSame('│', $this->target->getBorder(1));
-        $this->assertSame('└', $this->target->getBorder(4));
+        $this->assertSame('┐', $this->target->getBorderChar(3));
+        $this->assertSame('│', $this->target->getBorderChar(1));
+        $this->assertSame('└', $this->target->getBorderChar(4));
     }
 
     /**
@@ -64,10 +62,24 @@ class BorderTest extends TestCase
      */
     public function shouldChangeOneBorderWhenCallSetBorder()
     {
-        $this->target->setBorder(3, '+');
+        $this->target->setBorderChar(3, '+');
 
-        $this->assertSame('+', $this->target->getBorder(3));
-        $this->assertSame('│', $this->target->getBorder(1));
-        $this->assertSame('└', $this->target->getBorder(4));
+        $this->assertSame('+', $this->target->getBorderChar(3));
+        $this->assertSame('│', $this->target->getBorderChar(1));
+        $this->assertSame('└', $this->target->getBorderChar(4));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldChangeBorderSettingWhenEnableAndDisable()
+    {
+        $this->target->disableBorder();
+
+        $this->assertFalse($this->target->hasBorder());
+
+        $this->target->enableBorder();
+
+        $this->assertTrue($this->target->hasBorder());
     }
 }
