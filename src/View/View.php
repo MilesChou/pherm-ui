@@ -3,31 +3,11 @@
 namespace MilesChou\PhermUI\View;
 
 use MilesChou\Pherm\Terminal;
-use MilesChou\PhermUI\View\Concerns\Border;
+use MilesChou\PhermUI\View\Concerns\Layout;
 
 class View
 {
-    use Border;
-
-    /**
-     * @var int
-     */
-    private $x0;
-
-    /**
-     * @var int
-     */
-    private $x1;
-
-    /**
-     * @var int
-     */
-    private $y0;
-
-    /**
-     * @var int
-     */
-    private $y1;
+    use Layout;
 
     /**
      * @var array
@@ -45,26 +25,31 @@ class View
     private $title;
 
     /**
+     * @var string
+     */
+    private $content = '';
+
+    /**
      * @var Terminal
      */
     private $terminal;
 
     /**
      * @param Terminal $terminal
-     * @param int $x0
-     * @param int $y0
-     * @param int $x1
-     * @param int $y1
+     * @param int $x
+     * @param int $y
+     * @param int $sizeX
+     * @param int $sizeY
      */
-    public function __construct(Terminal $terminal, int $x0, int $y0, int $x1, int $y1)
+    public function __construct(Terminal $terminal, int $x, int $y, int $sizeX, int $sizeY)
     {
-        $this->x0 = $x0;
-        $this->y0 = $y0;
-        $this->x1 = $x1;
-        $this->y1 = $y1;
         $this->terminal = $terminal;
+        $this->positionX = $x;
+        $this->positionY = $y;
+        $this->sizeX = $sizeX;
+        $this->sizeY = $sizeY;
 
-        $this->init();
+        $this->resetBuffer();
     }
 
     public function flush(): void
@@ -72,7 +57,7 @@ class View
         foreach ($this->buffer as $y => $columns) {
             foreach ($columns as $x => $cell) {
                 if ($cell[0] !== null && $this->isDisplayable($y, $x)) {
-                    $this->terminal->writeCursor($this->y0 + $y, $this->x0 + $x, $cell[0]);
+                    $this->terminal->writeCursor($this->positionY + $y, $this->positionX + $x, $cell[0]);
                 }
             }
         }
@@ -81,26 +66,29 @@ class View
     public function draw(): void
     {
         $this->clearFrame();
-        $this->drawEdges();
-        $this->drawCorners();
 
-        if ($this->title) {
-            $this->drawTitle();
+        if ($this->hasBorder()) {
+            $this->drawEdges();
+            $this->drawCorners();
+
+            if ($this->title) {
+                $this->drawTitle();
+            }
         }
+
+        $this->drawContent();
 
         if (!$this->instantOutput) {
             $this->flush();
         }
-
-        $this->terminal->cursor()->move($this->y1, $this->x1 + 1);
     }
 
     private function clearFrame(): void
     {
-        [$maxX, $maxY] = $this->frameSize();
+        [$frameSizeX, $frameSizeY] = $this->frameSize();
 
-        for ($y = 0; $y < $maxY; $y++) {
-            for ($x = 0; $x < $maxX; $x++) {
+        for ($y = 0; $y < $frameSizeY; $y++) {
+            for ($x = 0; $x < $frameSizeX; $x++) {
                 $this->write($y, $x, ' ');
             }
         }
@@ -108,7 +96,7 @@ class View
 
     private function drawEdges(): void
     {
-        [$sizeY, $sizeX] = $this->size();
+        [$sizeX, $sizeY] = $this->size();
 
         if ($sizeX > 0) {
             foreach (range(1, $sizeX) as $x) {
@@ -127,7 +115,7 @@ class View
 
     private function drawCorners(): void
     {
-        [$sizeY, $sizeX] = $this->size();
+        [$sizeX, $sizeY] = $this->size();
 
         $this->write(0, 0, $this->getBorderChar(2));
         $this->write(0, $sizeX + 1, $this->getBorderChar(3));
@@ -135,39 +123,32 @@ class View
         $this->write($sizeY + 1, $sizeX + 1, $this->getBorderChar(5));
     }
 
-    public function frameSize(): array
-    {
-        return [$this->frameSizeX(), $this->frameSizeY()];
-    }
-
-    public function frameSizeX(): int
-    {
-        return $this->x1 - $this->x0 + 1;
-    }
-
-    public function frameSizeY(): int
-    {
-        return $this->y1 - $this->y0 + 1;
-    }
-
-    public function size(): array
-    {
-        return [$this->sizeY(), $this->sizeX()];
-    }
-
-    public function sizeX(): int
-    {
-        return $this->frameSizeX() - 2;
-    }
-
-    public function sizeY(): int
-    {
-        return $this->frameSizeY() - 2;
-    }
-
     private function drawTitle(): void
     {
-        $this->write(0, 2, ' ' . $this->title . ' ');
+        $this->write(0, 1, ' ' . $this->title . ' ');
+    }
+
+    private function drawContent()
+    {
+        [$sizeX, $sizeY] = $this->size();
+
+        $chars = $this->charsToArray($this->content);
+
+        $y = 0;
+
+        foreach ($chars as $i => $char) {
+            if ($y === $sizeY) {
+                break;
+            }
+
+            $x = $i % $this->sizeX;
+
+            $this->write($y + (int)$this->border, $x + (int)$this->border, [$char]);
+
+            if ($x === $this->sizeX - 1) {
+                ++$y;
+            }
+        }
     }
 
     /**
@@ -181,32 +162,41 @@ class View
         return $this;
     }
 
-    private function init(): void
+    private function resetBuffer(): void
     {
-        [$sizeX, $sizeY] = $this->frameSize();
+        [$frameSizeX, $frameSizeY] = $this->frameSize();
 
         // $buffer[$y] = []
-        $this->buffer = array_fill(0, $sizeY, null);
+        $this->buffer = array_fill(0, $frameSizeY, null);
 
         // $buffer[$y][$x] = []
-        $this->buffer = array_map(function () use ($sizeX) {
-            return array_fill(0, $sizeX, [' ']);
+        $this->buffer = array_map(function () use ($frameSizeX) {
+            return array_fill(0, $frameSizeX, [' ']);
         }, $this->buffer);
     }
 
-    private function write(int $y, int $x, string $chars)
+    /**
+     * @param int $y
+     * @param int $x
+     * @param mixed $chars
+     */
+    private function write(int $y, int $x, $chars)
     {
         foreach ($this->charsToArray($chars) as $i => $char) {
             $this->buffer[$y][$x + $i] = [$char];
 
             if ($this->instantOutput && $char !== null && $this->isDisplayable($y, $x)) {
-                $this->terminal->writeCursor($this->y0 + $y, $this->x0 + $x, $char);
+                $this->terminal->writeCursor($this->positionY + $y, $this->positionX + $x + $i, $char);
             }
         }
     }
 
     private function charsToArray($chars)
     {
+        if (is_array($chars)) {
+            return $chars;
+        }
+
         $arr = [];
         $len = mb_strlen($chars);
 
@@ -235,8 +225,8 @@ class View
      */
     private function isDisplayable(int $y, int $x): bool
     {
-        $y += $this->y0;
-        $x += $this->x0;
+        $y += $this->positionY;
+        $x += $this->positionX;
 
         if ($y < 0 || $y > $this->terminal->height()) {
             return false;
@@ -247,5 +237,24 @@ class View
         }
 
         return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent(): string
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param string $content
+     * @return static
+     */
+    public function setContent(string $content)
+    {
+        $this->content = $content;
+
+        return $this;
     }
 }

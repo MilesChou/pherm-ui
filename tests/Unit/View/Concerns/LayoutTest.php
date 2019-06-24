@@ -2,20 +2,20 @@
 
 namespace Tests\Unit\View\Concerns;
 
-use MilesChou\PhermUI\View\Concerns\Border;
+use MilesChou\PhermUI\View\Concerns\Layout;
 use OutOfRangeException;
 use PHPUnit\Framework\TestCase;
 
-class BorderTest extends TestCase
+class LayoutTest extends TestCase
 {
     /**
-     * @var Border|\PHPUnit\Framework\MockObject\MockObject
+     * @var Layout|\PHPUnit\Framework\MockObject\MockObject
      */
     private $target;
 
     protected function setUp(): void
     {
-        $this->target = $this->getMockForTrait(Border::class);
+        $this->target = $this->getMockForTrait(Layout::class);
     }
 
     /**
@@ -36,7 +36,7 @@ class BorderTest extends TestCase
      */
     public function shouldThrowExceptionWhenCallDefaultWhenIndexOutOfRange()
     {
-        Border::getBorderDefault(6);
+        Layout::getBorderDefault(6);
     }
 
     /**

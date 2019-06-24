@@ -49,15 +49,15 @@ class PhermUI
 
     /**
      * @param string $name
-     * @param int $x0
-     * @param int $y0
-     * @param int $x1
-     * @param int $y1
+     * @param int $x
+     * @param int $y
+     * @param int $sizeX
+     * @param int $sizeY
      * @return View
      */
-    public function createView(string $name, int $x0, int $y0, int $x1, int $y1): View
+    public function createView(string $name, int $x, int $y, int $sizeX, int $sizeY): View
     {
-        $view = new View($this->terminal, $x0, $y0, $x1, $y1);
+        $view = new View($this->terminal, $x, $y, $sizeX, $sizeY);
 
         $this->views[$name] = $view;
 
