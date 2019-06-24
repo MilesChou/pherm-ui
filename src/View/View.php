@@ -3,21 +3,18 @@
 namespace MilesChou\PhermUI\View;
 
 use MilesChou\Pherm\Terminal;
+use MilesChou\PhermUI\View\Concerns\Configuration;
 use MilesChou\PhermUI\View\Concerns\Layout;
 
 class View
 {
+    use Configuration;
     use Layout;
 
     /**
      * @var array
      */
     private $buffer = [];
-
-    /**
-     * @var bool
-     */
-    private $instantOutput = false;
 
     /**
      * @var string
@@ -78,7 +75,7 @@ class View
 
         $this->drawContent();
 
-        if (!$this->instantOutput) {
+        if (!$this->instantRender) {
             $this->flush();
         }
     }
@@ -185,7 +182,7 @@ class View
         foreach ($this->charsToArray($chars) as $i => $char) {
             $this->buffer[$y][$x + $i] = [$char];
 
-            if ($this->instantOutput && $char !== null && $this->isDisplayable($y, $x)) {
+            if ($this->instantRender && $char !== null && $this->isDisplayable($y, $x)) {
                 $this->terminal->writeCursor($this->positionY + $y, $this->positionX + $x + $i, $char);
             }
         }
