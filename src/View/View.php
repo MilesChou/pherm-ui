@@ -3,6 +3,7 @@
 namespace MilesChou\PhermUI\View;
 
 use MilesChou\Pherm\Terminal;
+use MilesChou\PhermUI\Support\Char;
 use MilesChou\PhermUI\View\Concerns\Configuration;
 use MilesChou\PhermUI\View\Concerns\Layout;
 
@@ -125,11 +126,11 @@ class View
         $this->write(0, 1, ' ' . $this->title . ' ');
     }
 
-    private function drawContent()
+    private function drawContent(): void
     {
         [$sizeX, $sizeY] = $this->size();
 
-        $chars = $this->charsToArray($this->content);
+        $chars = Char::charsToArray($this->content);
 
         $y = 0;
 
@@ -175,11 +176,15 @@ class View
     /**
      * @param int $y
      * @param int $x
-     * @param mixed $chars
+     * @param string|array $chars
      */
     private function write(int $y, int $x, $chars)
     {
-        foreach ($this->charsToArray($chars) as $i => $char) {
+        if (is_string($chars)) {
+            $chars = Char::charsToArray($chars);
+        }
+
+        foreach ($chars as $i => $char) {
             $this->buffer[$y][$x + $i] = [$char];
 
             if ($this->instantRender && $char !== null && $this->isDisplayable($y, $x)) {
