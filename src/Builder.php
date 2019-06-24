@@ -9,10 +9,10 @@ use MilesChou\Pherm\Terminal;
 class Builder
 {
     /**
-     * @return Cui
+     * @return PhermUI
      */
     public function build()
     {
-        return new Cui(new Terminal(new InputStream, new OutputStream()));
+        return new PhermUI(new Terminal(new InputStream, new OutputStream()));
     }
 }

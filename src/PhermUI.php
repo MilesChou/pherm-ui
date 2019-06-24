@@ -9,7 +9,7 @@ use MilesChou\PhermUI\View\View;
 /**
  * @mixin Terminal
  */
-class Cui
+class PhermUI
 {
     /**
      * @var Terminal
