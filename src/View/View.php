@@ -1,31 +1,13 @@
 <?php
 
-namespace MilesChou\PhermUI;
+namespace MilesChou\PhermUI\View;
 
 use MilesChou\Pherm\Terminal;
-use OutOfRangeException;
+use MilesChou\PhermUI\View\Concerns\Border;
 
 class View
 {
-    /**
-     * Border key for get/set $border setting
-     */
-    public const BORDER_KEY_HORIZONTAL = 0;
-    public const BORDER_KEY_VERTICAL = 1;
-    public const BORDER_KEY_TOP_LEFT = 2;
-    public const BORDER_KEY_TOP_RIGHT = 3;
-    public const BORDER_KEY_BOTTOM_LEFT = 4;
-    public const BORDER_KEY_BOTTOM_RIGHT = 5;
-
-    /**
-     * Default border setting
-     */
-    private const BORDER_DEFAULT = ['─', '│', '┌', '┐', '└', '┘'];
-
-    /**
-     * @var array [horizontal, vertical, top-left, top-right, bottom-left, bottom-right]
-     */
-    private $border = self::BORDER_DEFAULT;
+    use Border;
 
     /**
      * @var int
@@ -85,22 +67,6 @@ class View
         $this->init();
     }
 
-    /**
-     * @return static
-     */
-    public function useAsciiBorder()
-    {
-        return $this->setBorder(['-', '|', '+', '+', '+', '+']);
-    }
-
-    /**
-     * @return static
-     */
-    public function useDefaultBorder()
-    {
-        return $this->setBorder(self::BORDER_DEFAULT);
-    }
-
     public function flush(): void
     {
         foreach ($this->buffer as $y => $columns) {
@@ -146,15 +112,15 @@ class View
 
         if ($sizeX > 0) {
             foreach (range(1, $sizeX) as $x) {
-                $this->write(0, (int)$x, $this->border[static::BORDER_KEY_HORIZONTAL]);
-                $this->write($sizeY + 1, (int)$x, $this->border[static::BORDER_KEY_HORIZONTAL]);
+                $this->write(0, (int)$x, $this->getBorder(0));
+                $this->write($sizeY + 1, (int)$x, $this->getBorder(0));
             }
         }
 
         if ($sizeY > 0) {
             foreach (range(1, $sizeY) as $y) {
-                $this->write((int)$y, 0, $this->border[static::BORDER_KEY_VERTICAL]);
-                $this->write((int)$y, $sizeX + 1, $this->border[static::BORDER_KEY_VERTICAL]);
+                $this->write((int)$y, 0, $this->getBorder(1));
+                $this->write((int)$y, $sizeX + 1, $this->getBorder(1));
             }
         }
     }
@@ -163,10 +129,10 @@ class View
     {
         [$sizeY, $sizeX] = $this->size();
 
-        $this->write(0, 0, $this->border[static::BORDER_KEY_TOP_LEFT]);
-        $this->write(0, $sizeX + 1, $this->border[static::BORDER_KEY_TOP_RIGHT]);
-        $this->write($sizeY + 1, $sizeX + 1, $this->border[static::BORDER_KEY_BOTTOM_RIGHT]);
-        $this->write($sizeY + 1, 0, $this->border[static::BORDER_KEY_BOTTOM_LEFT]);
+        $this->write(0, 0, $this->getBorder(2));
+        $this->write(0, $sizeX + 1, $this->getBorder(3));
+        $this->write($sizeY + 1, 0, $this->getBorder(4));
+        $this->write($sizeY + 1, $sizeX + 1, $this->getBorder(5));
     }
 
     public function frameSize(): array
@@ -281,38 +247,5 @@ class View
         }
 
         return true;
-    }
-
-    /**
-     * @param string|array $key
-     * @param string $char
-     * @return static
-     */
-    public function setBorder($key, $char = null)
-    {
-        if (is_array($key)) {
-            $this->border = $key;
-        } else {
-            $this->border[$key] = $char;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string $key
-     * @return string|array
-     */
-    public function getBorder(string $key)
-    {
-        if (isset($this->border[$key])) {
-            return $this->border[$key];
-        }
-
-        if (isset(static::BORDER_DEFAULT[$key])) {
-            return static::BORDER_DEFAULT[$key];
-        }
-
-        throw new OutOfRangeException("Illegal index '$key'");
     }
 }

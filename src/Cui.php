@@ -4,6 +4,7 @@ namespace MilesChou\PhermUI;
 
 use BadMethodCallException;
 use MilesChou\Pherm\Terminal;
+use MilesChou\PhermUI\View\View;
 
 /**
  * @mixin Terminal
