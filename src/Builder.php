@@ -1,6 +1,6 @@
 <?php
 
-namespace MilesChou\Phcui;
+namespace MilesChou\PhermUI;
 
 use MilesChou\Pherm\Input\InputStream;
 use MilesChou\Pherm\Output\OutputStream;

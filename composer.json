@@ -1,5 +1,5 @@
 {
-    "name": "mileschou/phcui",
+    "name": "mileschou/pherm-ui",
     "license": "MIT",
     "description": "",
     "type": "library",
@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "MilesChou\\Phcui\\": "src"
+            "MilesChou\\PhermUI\\": "src"
         }
     },
     "autoload-dev": {

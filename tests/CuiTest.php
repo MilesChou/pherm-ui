@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use MilesChou\Phcui\Builder;
-use MilesChou\Phcui\Cui;
+use MilesChou\PhermUI\Builder;
+use MilesChou\PhermUI\Cui;
 use PHPUnit\Framework\TestCase;
 
 class CuiTest extends TestCase
