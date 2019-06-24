@@ -9,7 +9,7 @@ use MilesChou\Pherm\Terminal;
 class Builder
 {
     /**
-     * @return
+     * @return Cui
      */
     public function build()
     {

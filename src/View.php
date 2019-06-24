@@ -2,7 +2,7 @@
 
 namespace MilesChou\PhermUI;
 
-use MilesChou\Pherm\Contracts\Terminal;
+use MilesChou\Pherm\Terminal;
 use OutOfRangeException;
 
 class View
@@ -53,7 +53,7 @@ class View
     private $buffer = [];
 
     /**
-     * @var array
+     * @var bool
      */
     private $instantOutput = false;
 
@@ -146,15 +146,15 @@ class View
 
         if ($sizeX > 0) {
             foreach (range(1, $sizeX) as $x) {
-                $this->write(0, $x, $this->border[static::BORDER_KEY_HORIZONTAL]);
-                $this->write($sizeY + 1, $x, $this->border[static::BORDER_KEY_HORIZONTAL]);
+                $this->write(0, (int)$x, $this->border[static::BORDER_KEY_HORIZONTAL]);
+                $this->write($sizeY + 1, (int)$x, $this->border[static::BORDER_KEY_HORIZONTAL]);
             }
         }
 
         if ($sizeY > 0) {
             foreach (range(1, $sizeY) as $y) {
-                $this->write($y, 0, $this->border[static::BORDER_KEY_VERTICAL]);
-                $this->write($y, $sizeX + 1, $this->border[static::BORDER_KEY_VERTICAL]);
+                $this->write((int)$y, 0, $this->border[static::BORDER_KEY_VERTICAL]);
+                $this->write((int)$y, $sizeX + 1, $this->border[static::BORDER_KEY_VERTICAL]);
             }
         }
     }
@@ -232,10 +232,10 @@ class View
     {
         foreach ($this->charsToArray($chars) as $i => $char) {
             $this->buffer[$y][$x + $i] = [$char];
-        }
 
-        if ($this->instantOutput && $this->isDisplayable($y, $x)) {
-            $this->terminal->writeCursor($this->y0 + $y, $this->x0 + $x, $char);
+            if ($this->instantOutput && $char !== null && $this->isDisplayable($y, $x)) {
+                $this->terminal->writeCursor($this->y0 + $y, $this->x0 + $x, $char);
+            }
         }
     }
 
@@ -290,7 +290,7 @@ class View
      */
     public function setBorder($key, $char = null)
     {
-        if ($char === null) {
+        if (is_array($key)) {
             $this->border = $key;
         } else {
             $this->border[$key] = $char;
