@@ -5,12 +5,12 @@ namespace MilesChou\PhermUI\View;
 use MilesChou\Pherm\Terminal;
 use MilesChou\PhermUI\Support\Char;
 use MilesChou\PhermUI\View\Concerns\Configuration;
-use MilesChou\PhermUI\View\Concerns\Layout;
+use MilesChou\PhermUI\View\Concerns\Frame;
 
 class View
 {
     use Configuration;
-    use Layout;
+    use Frame;
 
     /**
      * @var array
@@ -42,10 +42,8 @@ class View
     public function __construct(Terminal $terminal, int $x, int $y, int $sizeX, int $sizeY)
     {
         $this->terminal = $terminal;
-        $this->positionX = $x;
-        $this->positionY = $y;
-        $this->sizeX = $sizeX;
-        $this->sizeY = $sizeY;
+        $this->setPosition($x, $y);
+        $this->setSize($sizeX, $sizeY);
 
         $this->resetBuffer();
     }
@@ -63,7 +61,7 @@ class View
 
     public function draw(): void
     {
-        $this->clearFrame();
+        $this->clearContent();
 
         if ($this->hasBorder()) {
             $this->drawEdges();
@@ -83,11 +81,22 @@ class View
 
     private function clearFrame(): void
     {
-        [$frameSizeX, $frameSizeY] = $this->frameSize();
+        [$sizeX, $sizeY] = $this->frameSize();
 
-        for ($y = 0; $y < $frameSizeY; $y++) {
-            for ($x = 0; $x < $frameSizeX; $x++) {
+        for ($y = 0; $y < $sizeY; $y++) {
+            for ($x = 0; $x < $sizeX; $x++) {
                 $this->write($y, $x, ' ');
+            }
+        }
+    }
+
+    private function clearContent(): void
+    {
+        [$sizeX, $sizeY] = $this->size();
+
+        for ($y = 0; $y < $sizeY; $y++) {
+            for ($x = 0; $x < $sizeX; $x++) {
+                $this->write($y + 1, $x + 1, ' ');
             }
         }
     }

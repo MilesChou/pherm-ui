@@ -2,26 +2,26 @@
 
 namespace Tests\PhermUI\View\Concerns;
 
-use MilesChou\PhermUI\View\Concerns\Layout;
+use MilesChou\PhermUI\View\Concerns\Frame;
 use OutOfRangeException;
 use PHPUnit\Framework\TestCase;
 
-class LayoutTest extends TestCase
+class FrameTest extends TestCase
 {
     /**
-     * @var Layout|\PHPUnit\Framework\MockObject\MockObject
+     * @var Frame|\PHPUnit\Framework\MockObject\MockObject
      */
     private $target;
 
     protected function setUp(): void
     {
-        $this->target = $this->getMockForTrait(Layout::class);
+        $this->target = $this->getMockForTrait(Frame::class);
     }
 
     /**
      * @test
      */
-    public function shouldReturnDefaultBorderSettingAndContent()
+    public function shouldReturnDefaultBorderSettingAndContent(): void
     {
         $this->assertTrue($this->target->hasBorder());
 
@@ -34,15 +34,15 @@ class LayoutTest extends TestCase
      * @test
      * @expectedException OutOfRangeException
      */
-    public function shouldThrowExceptionWhenCallDefaultWhenIndexOutOfRange()
+    public function shouldThrowExceptionWhenCallDefaultWhenIndexOutOfRange(): void
     {
-        Layout::getBorderDefault(6);
+        Frame::getBorderDefault(6);
     }
 
     /**
      * @test
      */
-    public function shouldBeOkayWhenUseDiffBorder()
+    public function shouldBeOkayWhenUseDiffBorder(): void
     {
         $this->target->useAsciiBorder();
 
@@ -60,7 +60,7 @@ class LayoutTest extends TestCase
     /**
      * @test
      */
-    public function shouldChangeOneBorderWhenCallSetBorder()
+    public function shouldChangeOneBorderWhenCallSetBorder(): void
     {
         $this->target->setBorderChar(3, '+');
 
@@ -72,7 +72,7 @@ class LayoutTest extends TestCase
     /**
      * @test
      */
-    public function shouldChangeBorderSettingWhenEnableAndDisable()
+    public function shouldChangeBorderSettingWhenEnableAndDisable(): void
     {
         $this->target->disableBorder();
 
@@ -81,5 +81,26 @@ class LayoutTest extends TestCase
         $this->target->enableBorder();
 
         $this->assertTrue($this->target->hasBorder());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldReturnCorrectSizeWhenSetTheSize(): void
+    {
+        $this->target->setSize(20, 10);
+
+        $this->assertSame([20, 10], $this->target->size());
+        $this->assertSame([22, 12], $this->target->frameSize());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldReturnCorrectPositionWhenSetThePosition(): void
+    {
+        $this->target->setPosition(5, 15);
+
+        $this->assertSame([5, 15], $this->target->position());
     }
 }

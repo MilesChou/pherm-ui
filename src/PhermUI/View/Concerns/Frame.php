@@ -4,7 +4,12 @@ namespace MilesChou\PhermUI\View\Concerns;
 
 use OutOfRangeException;
 
-trait Layout
+/**
+ * The layout is include the border and position
+ *
+ * @package MilesChou\PhermUI\View\Concerns
+ */
+trait Frame
 {
     /**
      * @var bool
@@ -82,7 +87,7 @@ trait Layout
      */
     public function frameSizeX(): int
     {
-        return $this->sizeX + ($this->border ? 2 : 0);
+        return $this->sizeX + 2;
     }
 
     /**
@@ -90,7 +95,7 @@ trait Layout
      */
     public function frameSizeY(): int
     {
-        return $this->sizeY + ($this->border ? 2 : 0);
+        return $this->sizeY + 2;
     }
 
     /**
@@ -111,6 +116,14 @@ trait Layout
     }
 
     /**
+     * @return array
+     */
+    public function position(): array
+    {
+        return [$this->positionX, $this->positionY];
+    }
+
+    /**
      * @param int|array $key
      * @param string $char
      * @return static
@@ -127,11 +140,31 @@ trait Layout
     }
 
     /**
+     * @param int $x
+     * @param int $y
+     */
+    public function setPosition(int $x, int $y): void
+    {
+        $this->positionX = $x;
+        $this->positionY = $y;
+    }
+
+    /**
+     * @param int $x
+     * @param int $y
+     */
+    public function setSize(int $x, int $y): void
+    {
+        $this->sizeX = $x;
+        $this->sizeY = $y;
+    }
+
+    /**
      * @return array
      */
     public function size(): array
     {
-        return [$this->sizeX, $this->sizeY];
+        return [$this->sizeX(), $this->sizeY()];
     }
 
     /**
@@ -142,6 +175,7 @@ trait Layout
         return $this->sizeX;
     }
 
+
     /**
      * @return int
      */
@@ -149,7 +183,6 @@ trait Layout
     {
         return $this->sizeY;
     }
-
 
     /**
      * @return static
