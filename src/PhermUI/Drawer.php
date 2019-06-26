@@ -62,7 +62,7 @@ class Drawer
 
         for ($y = 0; $y < $sizeY; $y++) {
             for ($x = 0; $x < $sizeX; $x++) {
-                $this->write($view, $y, $x, ' ');
+                $this->write($view, $x, $y, ' ');
             }
         }
     }
@@ -73,7 +73,7 @@ class Drawer
 
         for ($y = 0; $y < $sizeY; $y++) {
             for ($x = 0; $x < $sizeX; $x++) {
-                $view->writeBuffer($y + 1, $x + 1, ' ');
+                $view->writeBuffer($x + 1, $y + 1, ' ');
             }
         }
     }
@@ -84,32 +84,35 @@ class Drawer
 
         if ($sizeX > 0) {
             foreach (range(1, $sizeX) as $x) {
-                $view->writeBuffer(0, (int)$x, $view->getBorderChar(0));
-                $view->writeBuffer($sizeY + 1, (int)$x, $view->getBorderChar(0));
+                $view->writeBuffer((int)$x, 0, $view->getBorderChar(0));
+                $view->writeBuffer((int)$x, $sizeY + 1, $view->getBorderChar(0));
             }
         }
 
         if ($sizeY > 0) {
             foreach (range(1, $sizeY) as $y) {
-                $view->writeBuffer((int)$y, 0, $view->getBorderChar(1));
-                $view->writeBuffer((int)$y, $sizeX + 1, $view->getBorderChar(1));
+                $view->writeBuffer(0, (int)$y, $view->getBorderChar(1));
+                $view->writeBuffer($sizeX + 1, (int)$y, $view->getBorderChar(1));
             }
         }
     }
 
+    /**
+     * @param View $view
+     */
     private function drawCorners(View $view): void
     {
         [$sizeX, $sizeY] = $view->size();
 
         $view->writeBuffer(0, 0, $view->getBorderChar(2));
-        $view->writeBuffer(0, $sizeX + 1, $view->getBorderChar(3));
-        $view->writeBuffer($sizeY + 1, 0, $view->getBorderChar(4));
-        $view->writeBuffer($sizeY + 1, $sizeX + 1, $view->getBorderChar(5));
+        $view->writeBuffer($sizeX + 1, 0, $view->getBorderChar(3));
+        $view->writeBuffer(0, $sizeY + 1, $view->getBorderChar(4));
+        $view->writeBuffer($sizeX + 1, $sizeY + 1, $view->getBorderChar(5));
     }
 
     private function drawTitle(View $view): void
     {
-        $this->write($view, 0, 1, ' ' . $view->getTitle() . ' ');
+        $this->write($view, 1, 0, ' ' . $view->getTitle() . ' ');
     }
 
     private function drawContent(View $view): void
@@ -130,7 +133,7 @@ class Drawer
 
                 $x = $i % $sizeX;
 
-                $view->writeBuffer($y + (int)$view->hasBorder(), $x + (int)$view->hasBorder(), $char);
+                $view->writeBuffer($x + (int)$view->hasBorder(), $y + (int)$view->hasBorder(), $char);
 
                 if ($x === $sizeX - 1) {
                     ++$y;
@@ -147,7 +150,7 @@ class Drawer
      * @param int $x
      * @param string|array $chars
      */
-    private function write(View $view, int $y, int $x, $chars): void
+    private function write(View $view, int $x, int $y, $chars): void
     {
         [$positionX, $positionY] = $view->position();
 
@@ -156,7 +159,7 @@ class Drawer
         }
 
         foreach ($chars as $i => $char) {
-            $view->writeBuffer($y, $x + $i, $char);
+            $view->writeBuffer($x + $i, $y, $char);
 
             if ($char !== null && $view->isInstantRender() && $this->isDisplayable($view, $y, $x)) {
                 $this->terminal->moveCursor((int)$positionX + $x + $i, $positionY + $y)->write($char);
@@ -170,18 +173,18 @@ class Drawer
      * @param int $x Relative position X in view
      * @return bool
      */
-    private function isDisplayable(View $view, int $y, int $x): bool
+    private function isDisplayable(View $view, int $x, int $y): bool
     {
         [$positionX, $positionY] = $view->position();
 
-        $y += $positionY;
         $x += $positionX;
+        $y += $positionY;
 
-        if ($y < 0 || $y > $this->terminal->height()) {
+        if ($x < 0 || $x > $this->terminal->width()) {
             return false;
         }
 
-        if ($x < 0 || $x > $this->terminal->width()) {
+        if ($y < 0 || $y > $this->terminal->height()) {
             return false;
         }
 

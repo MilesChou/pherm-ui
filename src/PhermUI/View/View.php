@@ -115,7 +115,7 @@ class View
      * @param int $x
      * @param string|null $char
      */
-    public function writeBuffer(int $y, int $x, $char): void
+    public function writeBuffer(int $x, int $y, $char): void
     {
         if (!isset($this->buffer[$y][$x])) {
             throw new InvalidArgumentException("Invalid x '$x' or y '$y'");
