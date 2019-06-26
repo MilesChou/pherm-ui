@@ -193,33 +193,6 @@ class View
         }
     }
 
-    private function charsToArray($chars)
-    {
-        if (is_array($chars)) {
-            return $chars;
-        }
-
-        $arr = [];
-        $len = mb_strlen($chars);
-
-        for ($i = 0; $i < $len; $i++) {
-            $arr[] = mb_substr($chars, $i, 1);
-        }
-
-        return array_reduce($arr, function ($carry, $char) {
-            $carry[] = $char;
-
-            // Workaround for Chinese chars
-            // See http://www.unicode.org/Public/5.0.0/ucd/Blocks.txt
-            $order = mb_ord($char);
-            if ($order >= 0x4e00 && $order <= 0x9fff) {
-                $carry[] = null;
-            }
-
-            return $carry;
-        }, []);
-    }
-
     /**
      * @param int $y Relative position Y in view
      * @param int $x Relative position X in view

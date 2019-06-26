@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\View\Concerns;
+namespace Tests\PhermUI\View\Concerns;
 
 use MilesChou\PhermUI\View\Concerns\Layout;
 use OutOfRangeException;

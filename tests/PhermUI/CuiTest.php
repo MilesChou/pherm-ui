@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Tests\PhermUI;
 
 use MilesChou\PhermUI\Builder;
 use MilesChou\PhermUI\PhermUI;
