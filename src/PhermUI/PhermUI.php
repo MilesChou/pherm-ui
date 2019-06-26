@@ -21,10 +21,17 @@ class PhermUI
      */
     private $views = [];
 
+    /**
+     * @var Drawer
+     */
+    private $drawer;
+
     public function __construct(Terminal $terminal)
     {
         $this->terminal = $terminal;
         $this->terminal->bootstrap();
+
+        $this->drawer = new Drawer($terminal);
     }
 
     public function __call($method, $arguments)
@@ -43,7 +50,7 @@ class PhermUI
         $this->terminal->clear();
 
         foreach ($this->views as $view) {
-            $view->draw();
+            $this->drawer->draw($view);
         }
     }
 
@@ -57,7 +64,7 @@ class PhermUI
      */
     public function createView(string $name, int $x, int $y, int $sizeX, int $sizeY): View
     {
-        $view = new View($this->terminal, $x, $y, $sizeX, $sizeY);
+        $view = new View($x, $y, $sizeX, $sizeY);
 
         $this->views[$name] = $view;
 
