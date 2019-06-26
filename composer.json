@@ -11,7 +11,6 @@
     ],
     "require": {
         "php": ">=7.1",
-        "ext-posix": "*",
         "mileschou/pherm": "~0.1"
     },
     "require-dev": {
@@ -29,5 +28,6 @@
         "psr-4": {
             "Tests\\": "tests"
         }
-    }
+    },
+    "minimum-stability": "dev"
 }
