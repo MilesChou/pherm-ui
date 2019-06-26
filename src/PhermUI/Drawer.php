@@ -2,12 +2,17 @@
 
 namespace MilesChou\PhermUI;
 
-use MilesChou\Pherm\Terminal;
 use MilesChou\Pherm\Support\Char;
-use MilesChou\PhermUI\View\View;
+use MilesChou\Pherm\Terminal;
+use MilesChou\PhermUI\View\ViewInterface;
 
 class Drawer
 {
+    /**
+     * @var bool
+     */
+    private $instantRender = false;
+
     /**
      * @var Terminal
      */
@@ -21,7 +26,36 @@ class Drawer
         $this->terminal = $terminal;
     }
 
-    public function draw(View $view): void
+    /**
+     * @return static
+     */
+    public function disableInstantRender()
+    {
+        $this->instantRender = true;
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function enableInstantRender()
+    {
+        $this->instantRender = true;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInstantRender(): bool
+    {
+        return $this->instantRender;
+    }
+
+    /**
+     * @param ViewInterface $view
+     */
+    public function draw(ViewInterface $view): void
     {
         if ($view->hasBorder()) {
             $this->drawEdges($view);
@@ -35,12 +69,12 @@ class Drawer
         $this->clearContent($view);
         $this->drawContent($view);
 
-        if (!$view->isInstantRender()) {
+        if (!$this->isInstantRender()) {
             $this->flush($view);
         }
     }
 
-    public function flush(View $view): void
+    public function flush(ViewInterface $view): void
     {
         [$positionX, $positionY] = $view->position();
 
@@ -54,9 +88,9 @@ class Drawer
     }
 
     /**
-     * @param View $view
+     * @param ViewInterface $view
      */
-    public function clearFrame(View $view): void
+    public function clearFrame(ViewInterface $view): void
     {
         [$sizeX, $sizeY] = $view->frameSize();
 
@@ -67,7 +101,10 @@ class Drawer
         }
     }
 
-    private function clearContent(View $view): void
+    /**
+     * @param ViewInterface $view
+     */
+    private function clearContent(ViewInterface $view): void
     {
         [$sizeX, $sizeY] = $view->size();
 
@@ -78,7 +115,7 @@ class Drawer
         }
     }
 
-    private function drawEdges(View $view): void
+    private function drawEdges(ViewInterface $view): void
     {
         [$sizeX, $sizeY] = $view->size();
 
@@ -98,9 +135,9 @@ class Drawer
     }
 
     /**
-     * @param View $view
+     * @param ViewInterface $view
      */
-    private function drawCorners(View $view): void
+    private function drawCorners(ViewInterface $view): void
     {
         [$sizeX, $sizeY] = $view->size();
 
@@ -110,12 +147,12 @@ class Drawer
         $view->writeBuffer($sizeX + 1, $sizeY + 1, $view->getBorderChar(5));
     }
 
-    private function drawTitle(View $view): void
+    private function drawTitle(ViewInterface $view): void
     {
         $this->write($view, 1, 0, ' ' . $view->getTitle() . ' ');
     }
 
-    private function drawContent(View $view): void
+    private function drawContent(ViewInterface $view): void
     {
         [$sizeX, $sizeY] = $view->size();
 
@@ -145,12 +182,12 @@ class Drawer
     }
 
     /**
-     * @param View $view
+     * @param ViewInterface $view
      * @param int $y
      * @param int $x
      * @param string|array $chars
      */
-    private function write(View $view, int $x, int $y, $chars): void
+    private function write(ViewInterface $view, int $x, int $y, $chars): void
     {
         [$positionX, $positionY] = $view->position();
 
@@ -161,19 +198,19 @@ class Drawer
         foreach ($chars as $i => $char) {
             $view->writeBuffer($x + $i, $y, $char);
 
-            if ($char !== null && $view->isInstantRender() && $this->isDisplayable($view, $y, $x)) {
+            if ($char !== null && $this->isDisplayable($view, $y, $x)) {
                 $this->terminal->moveCursor((int)$positionX + $x + $i, $positionY + $y)->write($char);
             }
         }
     }
 
     /**
-     * @param View $view
+     * @param ViewInterface $view
      * @param int $y Relative position Y in view
      * @param int $x Relative position X in view
      * @return bool
      */
-    private function isDisplayable(View $view, int $x, int $y): bool
+    private function isDisplayable(ViewInterface $view, int $x, int $y): bool
     {
         [$positionX, $positionY] = $view->position();
 

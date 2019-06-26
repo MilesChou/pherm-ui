@@ -90,9 +90,9 @@ class View implements ViewInterface
 
     /**
      * @param string $title
-     * @return View
+     * @return static
      */
-    public function setTitle(string $title): View
+    public function setTitle(string $title)
     {
         $this->title = $title;
 

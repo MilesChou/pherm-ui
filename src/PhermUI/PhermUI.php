@@ -6,6 +6,7 @@ use BadMethodCallException;
 use MilesChou\Pherm\Terminal;
 use MilesChou\PhermUI\View\SelectView;
 use MilesChou\PhermUI\View\View;
+use MilesChou\PhermUI\View\ViewInterface;
 
 /**
  * @mixin Terminal
@@ -18,7 +19,7 @@ class PhermUI
     private $terminal;
 
     /**
-     * @var View[]
+     * @var ViewInterface[]
      */
     private $views = [];
 
@@ -83,7 +84,7 @@ class PhermUI
      */
     public function createSelectView(string $name, int $x, int $y, int $sizeX, int $sizeY, $items = []): SelectView
     {
-        $view = new SelectView($x, $y, $sizeX, $sizeY);
+        $view = new SelectView($x, $y, $sizeX, $sizeY, $items);
 
         $this->views[$name] = $view;
 

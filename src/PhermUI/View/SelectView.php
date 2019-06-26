@@ -7,8 +7,10 @@ use MilesChou\Pherm\Terminal;
 use MilesChou\PhermUI\View\Concerns\Configuration;
 use MilesChou\PhermUI\View\Concerns\Frame;
 
-class SelectView extends View
+class SelectView implements ViewInterface
 {
+    use ViewAwareTrait;
+
     /**
      * @var array
      */
@@ -21,8 +23,7 @@ class SelectView extends View
 
     public function __construct(int $x, int $y, int $sizeX, int $sizeY, $items = [])
     {
-        parent::__construct($x, $y, $sizeX, $sizeY);
-
+        $this->baseView = new View($x, $y, $sizeX, $sizeY);
         $this->items = $items;
     }
 
