@@ -116,22 +116,28 @@ class Drawer
     {
         [$sizeX, $sizeY] = $view->size();
 
-        $chars = Char::charsToArray($view->getContent());
+        $lines = explode("\n", $view->getContent());
 
         $y = 0;
 
-        foreach ($chars as $i => $char) {
-            if ($y === $sizeY) {
-                break;
+        foreach ($lines as $line) {
+            $chars = Char::charsToArray($line);
+
+            foreach ($chars as $i => $char) {
+                if ($y === $sizeY) {
+                    break;
+                }
+
+                $x = $i % $sizeX;
+
+                $view->writeBuffer($y + (int)$view->hasBorder(), $x + (int)$view->hasBorder(), $char);
+
+                if ($x === $sizeX - 1) {
+                    ++$y;
+                }
             }
 
-            $x = $i % $sizeX;
-
-            $view->writeBuffer($y + (int)$view->hasBorder(), $x + (int)$view->hasBorder(), $char);
-
-            if ($x === $sizeX - 1) {
-                ++$y;
-            }
+            ++$y;
         }
     }
 

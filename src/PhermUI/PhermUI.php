@@ -4,6 +4,7 @@ namespace MilesChou\PhermUI;
 
 use BadMethodCallException;
 use MilesChou\Pherm\Terminal;
+use MilesChou\PhermUI\View\SelectView;
 use MilesChou\PhermUI\View\View;
 
 /**
@@ -65,6 +66,24 @@ class PhermUI
     public function createView(string $name, int $x, int $y, int $sizeX, int $sizeY): View
     {
         $view = new View($x, $y, $sizeX, $sizeY);
+
+        $this->views[$name] = $view;
+
+        return $view;
+    }
+
+    /**
+     * @param string $name
+     * @param int $x
+     * @param int $y
+     * @param int $sizeX
+     * @param int $sizeY
+     * @param array $items
+     * @return SelectView
+     */
+    public function createSelectView(string $name, int $x, int $y, int $sizeX, int $sizeY, $items = []): SelectView
+    {
+        $view = new SelectView($x, $y, $sizeX, $sizeY);
 
         $this->views[$name] = $view;
 
