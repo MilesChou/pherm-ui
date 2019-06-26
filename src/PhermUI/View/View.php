@@ -7,7 +7,7 @@ use MilesChou\Pherm\Terminal;
 use MilesChou\PhermUI\View\Concerns\Configuration;
 use MilesChou\PhermUI\View\Concerns\Frame;
 
-class View
+class View implements ViewInterface
 {
     use Configuration;
     use Frame;
