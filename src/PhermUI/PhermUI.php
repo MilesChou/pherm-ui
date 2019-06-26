@@ -45,17 +45,6 @@ class PhermUI
         throw new BadMethodCallException("Invalid method name '$method'");
     }
 
-    public function run(): void
-    {
-        $this->terminal->bootstrap();
-        $this->terminal->disableCanonicalMode();
-        $this->terminal->clear();
-
-        foreach ($this->views as $view) {
-            $this->drawer->draw($view);
-        }
-    }
-
     /**
      * @param string $name
      * @param int $x
@@ -89,5 +78,32 @@ class PhermUI
         $this->views[$name] = $view;
 
         return $view;
+    }
+
+    /**
+     * @return Drawer
+     */
+    public function getDrawer(): Drawer
+    {
+        return $this->drawer;
+    }
+
+    /**
+     * @return Terminal
+     */
+    public function getTerminal(): Terminal
+    {
+        return $this->terminal;
+    }
+
+    public function run(): void
+    {
+        $this->terminal->bootstrap();
+        $this->terminal->disableCanonicalMode();
+        $this->terminal->clear();
+
+        foreach ($this->views as $view) {
+            $this->drawer->draw($view);
+        }
     }
 }

@@ -22,6 +22,11 @@ trait Frame
     private $borderChars = [];
 
     /**
+     * @var array Invoke when frame data change
+     */
+    private $frameChangeCallback = [];
+
+    /**
      * @var int
      */
     private $positionX;
@@ -57,11 +62,22 @@ trait Frame
     }
 
     /**
+     * @param callable $callback
+     */
+    public function addFrameChangeCallback($callback): void
+    {
+        $this->frameChangeCallback[] = $callback;
+    }
+
+    /**
      * @return static
      */
     public function disableBorder()
     {
         $this->border = false;
+
+        $this->fireFrameChangeCallback('border');
+
         return $this;
     }
 
@@ -71,7 +87,20 @@ trait Frame
     public function enableBorder()
     {
         $this->border = true;
+
+        $this->fireFrameChangeCallback('border');
+
         return $this;
+    }
+
+    /**
+     * @param string $event
+     */
+    public function fireFrameChangeCallback(string $event): void
+    {
+        foreach ($this->frameChangeCallback as $callable) {
+            $callable($this, $event);
+        }
     }
 
     /**
@@ -136,6 +165,8 @@ trait Frame
             $this->borderChars[$key] = $char;
         }
 
+        $this->fireFrameChangeCallback('border');
+
         return $this;
     }
 
@@ -147,6 +178,8 @@ trait Frame
     {
         $this->positionX = $x;
         $this->positionY = $y;
+
+        $this->fireFrameChangeCallback('position');
     }
 
     /**
@@ -157,6 +190,8 @@ trait Frame
     {
         $this->sizeX = $x;
         $this->sizeY = $y;
+
+        $this->fireFrameChangeCallback('size');
     }
 
     /**
@@ -167,6 +202,7 @@ trait Frame
         return [$this->sizeX(), $this->sizeY()];
     }
 
+
     /**
      * @return int
      */
@@ -174,7 +210,6 @@ trait Frame
     {
         return $this->sizeX;
     }
-
 
     /**
      * @return int
