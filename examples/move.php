@@ -13,7 +13,7 @@ $view->addFrameChangeCallback(function ($v) use ($cui) {
 
 $cui->run();
 
-$cui->move()->bottom();
+$cui->cursor()->bottom();
 
 $terminal = $cui->getTerminal();
 

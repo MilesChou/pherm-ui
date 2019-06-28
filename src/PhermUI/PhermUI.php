@@ -99,6 +99,7 @@ class PhermUI
     public function run(): void
     {
         $this->terminal->bootstrap();
+        $this->terminal->enableInstantOutput();
         $this->terminal->disableCanonicalMode();
         $this->terminal->clear();
 

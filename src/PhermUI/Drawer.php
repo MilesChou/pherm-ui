@@ -80,7 +80,7 @@ class Drawer
 
         foreach ($view->getBuffer() as $y => $columns) {
             foreach ($columns as $x => $cell) {
-                if ($cell[0] !== null && $this->isDisplayable($view, $y, $x)) {
+                if ($cell[0] !== null && $this->isDisplayable($view, $x, $y)) {
                     $this->terminal->moveCursor($positionX + $x, $positionY + $y)->write($cell[0]);
                 }
             }
@@ -198,7 +198,7 @@ class Drawer
         foreach ($chars as $i => $char) {
             $view->writeBuffer($x + $i, $y, $char);
 
-            if ($char !== null && $this->isDisplayable($view, $y, $x)) {
+            if ($char !== null && $this->isDisplayable($view, $x, $y)) {
                 $this->terminal->moveCursor((int)$positionX + $x + $i, $positionY + $y)->write($char);
             }
         }

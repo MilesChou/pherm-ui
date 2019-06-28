@@ -2,6 +2,7 @@
 
 namespace MilesChou\PhermUI\View\Concerns;
 
+use MilesChou\Pherm\Concerns\SizeAwareTrait;
 use OutOfRangeException;
 
 /**
@@ -11,6 +12,8 @@ use OutOfRangeException;
  */
 trait Frame
 {
+    use SizeAwareTrait;
+
     /**
      * @var bool
      */
@@ -116,7 +119,7 @@ trait Frame
      */
     public function frameSizeX(): int
     {
-        return $this->sizeX + 2;
+        return $this->width + 2;
     }
 
     /**
@@ -124,7 +127,7 @@ trait Frame
      */
     public function frameSizeY(): int
     {
-        return $this->sizeY + 2;
+        return $this->height + 2;
     }
 
     /**
@@ -183,40 +186,15 @@ trait Frame
     }
 
     /**
-     * @param int $x
-     * @param int $y
+     * @param int $width
+     * @param int $height
      */
-    public function setSize(int $x, int $y): void
+    public function setSize(int $width, int $height): void
     {
-        $this->sizeX = $x;
-        $this->sizeY = $y;
+        $this->width = $width;
+        $this->height = $height;
 
         $this->fireFrameChangeCallback('size');
-    }
-
-    /**
-     * @return array
-     */
-    public function size(): array
-    {
-        return [$this->sizeX(), $this->sizeY()];
-    }
-
-
-    /**
-     * @return int
-     */
-    public function sizeX(): int
-    {
-        return $this->sizeX;
-    }
-
-    /**
-     * @return int
-     */
-    public function sizeY(): int
-    {
-        return $this->sizeY;
     }
 
     /**

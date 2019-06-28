@@ -14,6 +14,6 @@ $cui->createSelectView('view1', 10, 10, 40, 5)
 
 $cui->run();
 
-$cui->move()->bottom();
+$cui->cursor()->bottom();
 
 sleep(1);

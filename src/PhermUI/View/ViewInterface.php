@@ -2,11 +2,6 @@
 
 namespace MilesChou\PhermUI\View;
 
-use InvalidArgumentException;
-use MilesChou\Pherm\Terminal;
-use MilesChou\PhermUI\View\Concerns\Configuration;
-use MilesChou\PhermUI\View\Concerns\Frame;
-
 interface ViewInterface
 {
     /**
