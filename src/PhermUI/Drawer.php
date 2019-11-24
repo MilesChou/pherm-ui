@@ -3,7 +3,7 @@
 namespace MilesChou\PhermUI;
 
 use MilesChou\Pherm\Terminal;
-use MilesChou\PhermUI\Support\Char;
+use MilesChou\Pherm\Support\Char;
 use MilesChou\PhermUI\View\View;
 
 class Drawer
@@ -47,7 +47,7 @@ class Drawer
         foreach ($view->getBuffer() as $y => $columns) {
             foreach ($columns as $x => $cell) {
                 if ($cell[0] !== null && $this->isDisplayable($view, $y, $x)) {
-                    $this->terminal->writeCursor($positionY + $y, $positionX + $x, $cell[0]);
+                    $this->terminal->moveCursor($positionX + $x, $positionY + $y)->write($cell[0]);
                 }
             }
         }
@@ -159,7 +159,7 @@ class Drawer
             $view->writeBuffer($y, $x + $i, $char);
 
             if ($char !== null && $view->isInstantRender() && $this->isDisplayable($view, $y, $x)) {
-                $this->terminal->writeCursor($positionY + $y, (int)$positionX + $x + $i, $char);
+                $this->terminal->moveCursor((int)$positionX + $x + $i, $positionY + $y)->write($char);
             }
         }
     }

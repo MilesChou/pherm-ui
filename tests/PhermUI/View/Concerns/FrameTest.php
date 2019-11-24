@@ -32,10 +32,11 @@ class FrameTest extends TestCase
 
     /**
      * @test
-     * @expectedException OutOfRangeException
      */
     public function shouldThrowExceptionWhenCallDefaultWhenIndexOutOfRange(): void
     {
+        $this->expectException(OutOfRangeException::class);
+
         Frame::getBorderDefault(6);
     }
 

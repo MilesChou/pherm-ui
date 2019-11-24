@@ -38,3 +38,4 @@ Desktop.ini
 
 # Artifacts files
 /build
+.phpunit.result.cache

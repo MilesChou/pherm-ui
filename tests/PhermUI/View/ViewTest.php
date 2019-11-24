@@ -2,9 +2,8 @@
 
 namespace Tests\PhermUI\View;
 
-use MilesChou\PhermUI\View\Concerns\Frame;
+use InvalidArgumentException;
 use MilesChou\PhermUI\View\View;
-use OutOfRangeException;
 use PHPUnit\Framework\TestCase;
 
 class ViewTest extends TestCase
@@ -84,10 +83,11 @@ class ViewTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
      */
     public function shouldThrowExceptionWhenWriteBufferWithInvalidPosition(): void
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $target = new View(1, 1, 1, 1);
 
         $target->writeBuffer(10, 10, 'x');
