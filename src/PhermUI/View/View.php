@@ -4,7 +4,6 @@ namespace MilesChou\PhermUI\View;
 
 use InvalidArgumentException;
 use MilesChou\Pherm\Concerns\BufferTrait;
-use MilesChou\Pherm\Concerns\InstantOutputTrait;
 use MilesChou\Pherm\Terminal;
 use MilesChou\PhermUI\View\Concerns\Frame;
 
@@ -12,7 +11,6 @@ class View implements ViewInterface
 {
     use BufferTrait;
     use Frame;
-    use InstantOutputTrait;
 
     /**
      * @var array

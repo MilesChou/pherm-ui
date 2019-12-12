@@ -1,10 +1,13 @@
 <?php
 
+use Illuminate\Container\Container;
 use MilesChou\Pherm\Control;
+use MilesChou\Pherm\Terminal;
+use MilesChou\PhermUI\PhermUI;
 
 include_once __DIR__ . '/../vendor/autoload.php';
 
-$cui = (new \MilesChou\PhermUI\Builder())->build();
+$cui = new PhermUI(new Terminal(new Container()));
 
 $view = $cui->createView('view1', 10, 10, 40, 5)->setContent('Move');
 $view->addFrameChangeCallback(function ($v) use ($cui) {
