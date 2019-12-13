@@ -46,7 +46,17 @@ class View implements ViewInterface
     }
 
     /**
-     * @return array
+     * @inheritDoc
+     */
+    public function clear()
+    {
+        $this->resetBuffer();
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
      */
     public function getBuffer(): array
     {
@@ -54,7 +64,7 @@ class View implements ViewInterface
     }
 
     /**
-     * @return string
+     * @inheritDoc
      */
     public function getContent(): string
     {

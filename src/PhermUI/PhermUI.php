@@ -83,7 +83,7 @@ class PhermUI
     /**
      * @return Drawer
      */
-    public function getDrawer(): Drawer
+    public function drawer(): Drawer
     {
         return $this->drawer;
     }
@@ -98,11 +98,17 @@ class PhermUI
 
     public function run(): void
     {
-        $this->terminal->enableInstantOutput();
+        $tty = $this->terminal->control()->tty();
+        $tty->disableCanonicalMode();
+        $tty->disableEchoBack();
+
+        $this->terminal->disableCursor();
         $this->terminal->clear();
 
         foreach ($this->views as $view) {
             $this->drawer->draw($view);
         }
+
+        $this->terminal->flush();
     }
 }

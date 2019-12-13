@@ -22,6 +22,16 @@ class SelectView implements ViewInterface
         $this->items = $items;
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function clear()
+    {
+        $this->items = [];
+
+        return $this;
+    }
+
     public function addItem(string $item)
     {
         $this->items[] = $item;

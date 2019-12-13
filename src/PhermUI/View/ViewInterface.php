@@ -5,6 +5,13 @@ namespace MilesChou\PhermUI\View;
 interface ViewInterface
 {
     /**
+     * Clear view to default
+     *
+     * @return static
+     */
+    public function clear();
+
+    /**
      * @return array
      */
     public function frameSize(): array;

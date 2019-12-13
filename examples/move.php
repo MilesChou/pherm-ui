@@ -1,5 +1,7 @@
 <?php
 
+use Amp\Delayed;
+use Amp\Loop;
 use Illuminate\Container\Container;
 use MilesChou\Pherm\Control;
 use MilesChou\Pherm\Terminal;
@@ -10,8 +12,8 @@ include_once __DIR__ . '/../vendor/autoload.php';
 $cui = new PhermUI(new Terminal(new Container()));
 
 $view = $cui->createView('view1', 10, 10, 40, 5)->setContent('Move');
-$view->addFrameChangeCallback(function ($v) use ($cui) {
-    $cui->getDrawer()->draw($v);
+$view->addFrameChangeCallback(static function ($v) use ($cui) {
+    $cui->drawer()->draw($v);
 });
 
 $cui->run();
@@ -20,42 +22,50 @@ $cui->cursor()->bottom();
 
 $terminal = $cui->getTerminal();
 
-$key = $terminal->keyBinding();
+\Amp\asyncCall(static function () use ($cui, $terminal, $view) {
+    $drawer = $cui->drawer();
+    while (true) {
+        $input = $terminal->read(4);
 
-$key->set(Control::CONTROL_SEQUENCES['CUU'], function () use ($view) {
-    [$x, $y] = $view->position();
+        if ($input === 'q') {
+            $terminal->cursor()->bottom();
+            return;
+        }
 
-    $view->setPosition($x, $y - 1);
-});
+        switch ($input) {
+            case Control::CONTROL_SEQUENCES['CUU']:
+                $drawer->flush($view->clear());
 
-$key->set(Control::CONTROL_SEQUENCES['CUB'], function () use ($view) {
-    [$x, $y] = $view->position();
+                [$x, $y] = $view->position();
+                $view->setPosition($x, $y - 1);
+                break;
 
-    $view->setPosition($x - 1, $y);
-});
+            case Control::CONTROL_SEQUENCES['CUB']:
+                $drawer->flush($view->clear());
 
-$key->set(Control::CONTROL_SEQUENCES['CUD'], function () use ($view) {
-    [$x, $y] = $view->position();
+                [$x, $y] = $view->position();
+                $view->setPosition($x - 1, $y);
+                break;
 
-    $view->setPosition($x, $y + 1);
-});
+            case Control::CONTROL_SEQUENCES['CUD']:
+                $drawer->flush($view->clear());
 
-$key->set(Control::CONTROL_SEQUENCES['CUF'], function () use ($view) {
-    [$x, $y] = $view->position();
+                [$x, $y] = $view->position();
+                $view->setPosition($x, $y + 1);
+                break;
 
-    $view->setPosition($x + 1, $y);
-});
+            case Control::CONTROL_SEQUENCES['CUF']:
+                $drawer->flush($view->clear());
 
-$terminal->disableCanonicalMode();
-$terminal->disableEchoBack();
-$terminal->disableCursor();
+                [$x, $y] = $view->position();
+                $view->setPosition($x + 1, $y);
+                break;
+        }
 
-while (true) {
-    $input = $terminal->read(4);
+        $terminal->flush();
 
-    if ($input === 'q') {
-        break;
+        yield new Delayed(1);
     }
+});
 
-    $key->handle($input);
-}
+Loop::run();
