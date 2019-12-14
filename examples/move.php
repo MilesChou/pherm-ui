@@ -11,7 +11,10 @@ include_once __DIR__ . '/../vendor/autoload.php';
 
 $cui = new PhermUI(new Terminal(new Container()));
 
-$view = $cui->createView('view1', 10, 10, 40, 5)->setContent('Move');
+$view = $cui->viewFactory()
+    ->createView('view1', 10, 10, 40, 5)
+    ->setContent('Move');
+
 $view->addFrameChangeCallback(static function ($v) use ($cui) {
     $cui->drawer()->draw($v);
 });

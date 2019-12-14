@@ -8,7 +8,8 @@ include_once __DIR__ . '/../vendor/autoload.php';
 
 $cui = new PhermUI(new Terminal(new Container()));
 
-$cui->createSelectView('view1', 10, 10, 40, 5)
+$cui->viewFactory()
+    ->createSelectView('view1', 10, 10, 40, 5)
     ->addItem('Hello')
     ->addItem('World')
     ->addItem('中文')
@@ -17,7 +18,5 @@ $cui->createSelectView('view1', 10, 10, 40, 5)
     ->addItem('Item 6');
 
 $cui->run();
-
-$cui->cursor()->bottom();
 
 sleep(1);

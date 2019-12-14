@@ -4,8 +4,7 @@ namespace MilesChou\PhermUI;
 
 use BadMethodCallException;
 use MilesChou\Pherm\Terminal;
-use MilesChou\PhermUI\View\SelectView;
-use MilesChou\PhermUI\View\View;
+use MilesChou\PhermUI\View\Factory as ViewFactory;
 use MilesChou\PhermUI\View\ViewInterface;
 
 /**
@@ -46,38 +45,11 @@ class PhermUI
     }
 
     /**
-     * @param string $name
-     * @param int $x
-     * @param int $y
-     * @param int $sizeX
-     * @param int $sizeY
-     * @return View
+     * @param ViewInterface $view
      */
-    public function createView(string $name, int $x, int $y, int $sizeX, int $sizeY): View
+    public function addView(ViewInterface $view): void
     {
-        $view = new View($x, $y, $sizeX, $sizeY);
-
-        $this->views[$name] = $view;
-
-        return $view;
-    }
-
-    /**
-     * @param string $name
-     * @param int $x
-     * @param int $y
-     * @param int $sizeX
-     * @param int $sizeY
-     * @param array $items
-     * @return SelectView
-     */
-    public function createSelectView(string $name, int $x, int $y, int $sizeX, int $sizeY, $items = []): SelectView
-    {
-        $view = new SelectView($x, $y, $sizeX, $sizeY, $items);
-
-        $this->views[$name] = $view;
-
-        return $view;
+        $this->views[] = $view;
     }
 
     /**
@@ -110,5 +82,13 @@ class PhermUI
         }
 
         $this->terminal->flush();
+    }
+
+    /**
+     * @return ViewFactory
+     */
+    public function viewFactory(): ViewFactory
+    {
+        return new ViewFactory($this);
     }
 }
