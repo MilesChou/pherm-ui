@@ -51,9 +51,9 @@ class SelectView implements ViewInterface
         $content = '';
 
         foreach ($this->items as $item) {
-            $content .= '  ' . $item . "\n";
+            $content .= trim($item) . "\n";
         }
 
-        return '  ' . trim($content);
+        return trim($content);
     }
 }
