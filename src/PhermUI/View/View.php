@@ -48,7 +48,7 @@ class View implements ViewInterface
     /**
      * @inheritDoc
      */
-    public function clear()
+    public function clear(): ViewInterface
     {
         $this->resetBuffer();
 
@@ -102,7 +102,7 @@ class View implements ViewInterface
      * @param string $title
      * @return static
      */
-    public function setTitle(string $title)
+    public function setTitle(string $title): ViewInterface
     {
         $this->title = $title;
 
@@ -125,7 +125,7 @@ class View implements ViewInterface
      * @param int $x
      * @param string|null $char
      */
-    public function writeBuffer(int $x, int $y, $char): void
+    public function write(int $x, int $y, $char): void
     {
         if (!isset($this->buffer[$y][$x])) {
             throw new InvalidArgumentException("Invalid x '$x' or y '$y'");

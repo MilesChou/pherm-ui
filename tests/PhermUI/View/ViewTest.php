@@ -76,7 +76,7 @@ class ViewTest extends TestCase
     {
         $target = new View(1, 1, 1, 1);
 
-        $target->writeBuffer(1, 1, 'x');
+        $target->write(1, 1, 'x');
 
         $this->assertSame(['x'], $target->getBuffer()[1][1]);
     }
@@ -90,6 +90,6 @@ class ViewTest extends TestCase
 
         $target = new View(1, 1, 1, 1);
 
-        $target->writeBuffer(10, 10, 'x');
+        $target->write(10, 10, 'x');
     }
 }

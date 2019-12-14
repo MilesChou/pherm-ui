@@ -7,9 +7,9 @@ interface ViewInterface
     /**
      * Clear view to default
      *
-     * @return static
+     * @return ViewInterface
      */
-    public function clear();
+    public function clear(): ViewInterface;
 
     /**
      * @return array
@@ -54,9 +54,9 @@ interface ViewInterface
 
     /**
      * @param string $title
-     * @return static
+     * @return ViewInterface
      */
-    public function setTitle(string $title);
+    public function setTitle(string $title): ViewInterface;
 
     /**
      * @return array
@@ -68,5 +68,5 @@ interface ViewInterface
      * @param int $x
      * @param string|null $char
      */
-    public function writeBuffer(int $x, int $y, $char): void;
+    public function write(int $x, int $y, $char): void;
 }

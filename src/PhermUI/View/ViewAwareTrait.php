@@ -65,7 +65,7 @@ trait ViewAwareTrait
         return $this;
     }
 
-    public function setTitle(string $title)
+    public function setTitle(string $title): ViewInterface
     {
         $this->baseView->setTitle($title);
 
@@ -77,8 +77,8 @@ trait ViewAwareTrait
         return $this->baseView->size();
     }
 
-    public function writeBuffer(int $x, int $y, $char): void
+    public function write(int $x, int $y, $char): void
     {
-        $this->baseView->writeBuffer($x, $y, $char);
+        $this->baseView->write($x, $y, $char);
     }
 }

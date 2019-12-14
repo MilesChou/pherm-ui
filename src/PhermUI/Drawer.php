@@ -77,7 +77,7 @@ class Drawer
 
         for ($y = 0; $y < $sizeY; $y++) {
             for ($x = 0; $x < $sizeX; $x++) {
-                $view->writeBuffer($x + 1, $y + 1, ' ');
+                $view->write($x + 1, $y + 1, ' ');
             }
         }
     }
@@ -88,15 +88,15 @@ class Drawer
 
         if ($sizeX > 0) {
             foreach (range(1, $sizeX) as $x) {
-                $view->writeBuffer((int)$x, 0, $view->getBorderChar(0));
-                $view->writeBuffer((int)$x, $sizeY + 1, $view->getBorderChar(0));
+                $view->write((int)$x, 0, $view->getBorderChar(0));
+                $view->write((int)$x, $sizeY + 1, $view->getBorderChar(0));
             }
         }
 
         if ($sizeY > 0) {
             foreach (range(1, $sizeY) as $y) {
-                $view->writeBuffer(0, (int)$y, $view->getBorderChar(1));
-                $view->writeBuffer($sizeX + 1, (int)$y, $view->getBorderChar(1));
+                $view->write(0, (int)$y, $view->getBorderChar(1));
+                $view->write($sizeX + 1, (int)$y, $view->getBorderChar(1));
             }
         }
     }
@@ -108,10 +108,10 @@ class Drawer
     {
         [$sizeX, $sizeY] = $view->size();
 
-        $view->writeBuffer(0, 0, $view->getBorderChar(2));
-        $view->writeBuffer($sizeX + 1, 0, $view->getBorderChar(3));
-        $view->writeBuffer(0, $sizeY + 1, $view->getBorderChar(4));
-        $view->writeBuffer($sizeX + 1, $sizeY + 1, $view->getBorderChar(5));
+        $view->write(0, 0, $view->getBorderChar(2));
+        $view->write($sizeX + 1, 0, $view->getBorderChar(3));
+        $view->write(0, $sizeY + 1, $view->getBorderChar(4));
+        $view->write($sizeX + 1, $sizeY + 1, $view->getBorderChar(5));
     }
 
     private function drawTitle(ViewInterface $view): void
@@ -137,7 +137,7 @@ class Drawer
 
                 $x = $i % $sizeX;
 
-                $view->writeBuffer($x + (int)$view->hasBorder(), $y + (int)$view->hasBorder(), $char);
+                $view->write($x + (int)$view->hasBorder(), $y + (int)$view->hasBorder(), $char);
 
                 if ($x === $sizeX - 1) {
                     ++$y;
@@ -163,7 +163,7 @@ class Drawer
         }
 
         foreach ($chars as $i => $char) {
-            $view->writeBuffer($x + $i, $y, $char);
+            $view->write($x + $i, $y, $char);
 
             if ($char !== null && $this->isDisplayable($view, $x, $y)) {
                 $this->terminal->moveCursor((int)$positionX + $x + $i, $positionY + $y)->write($char);
