@@ -9,11 +9,6 @@ use MilesChou\PhermUI\View\ViewInterface;
 class Drawer
 {
     /**
-     * @var bool
-     */
-    private $instantRender = false;
-
-    /**
      * @var Terminal
      */
     private $terminal;
@@ -24,32 +19,6 @@ class Drawer
     public function __construct(Terminal $terminal)
     {
         $this->terminal = $terminal;
-    }
-
-    /**
-     * @return static
-     */
-    public function disableInstantRender()
-    {
-        $this->instantRender = true;
-        return $this;
-    }
-
-    /**
-     * @return static
-     */
-    public function enableInstantRender()
-    {
-        $this->instantRender = true;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isInstantRender(): bool
-    {
-        return $this->instantRender;
     }
 
     /**
@@ -69,9 +38,7 @@ class Drawer
         $this->clearContent($view);
         $this->drawContent($view);
 
-        if (!$this->isInstantRender()) {
-            $this->flush($view);
-        }
+        $this->flush($view);
     }
 
     public function flush(ViewInterface $view): void
