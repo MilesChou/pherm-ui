@@ -2,22 +2,49 @@
 
 namespace Tests\PhermUI\View;
 
+use Illuminate\Container\Container;
 use InvalidArgumentException;
 use MilesChou\PhermUI\View\View;
+use OutOfRangeException;
 use PHPUnit\Framework\TestCase;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class ViewTest extends TestCase
 {
+    /**
+     * @var View
+     */
+    private $target;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $container = new Container();
+        $container->bind(EventDispatcherInterface::class, $this->getMockClass(EventDispatcherInterface::class));
+
+        $this->target = new View($container);
+    }
+
+    protected function tearDown(): void
+    {
+        $this->target = null;
+
+        parent::tearDown();
+    }
+
     /**
      * @test
      */
     public function shouldReturnCorrectPositionAndSizeWhenConstruct(): void
     {
-        $target = new View(5, 15, 20, 10);
+        $this->target->setPosition(5, 15);
+        $this->target->setSize(20, 10);
+        $this->target->clear();
 
-        $this->assertSame([5, 15], $target->position());
-        $this->assertSame([20, 10], $target->size());
-        $this->assertSame([22, 12], $target->frameSize());
+        $this->assertSame([5, 15], $this->target->position());
+        $this->assertSame([20, 10], $this->target->size());
+        $this->assertSame([22, 12], $this->target->frameSize());
     }
 
     /**
@@ -25,10 +52,12 @@ class ViewTest extends TestCase
      */
     public function shouldUsingFrameSizeWhenInitialBuffer(): void
     {
-        $target = new View(1, 1, 20, 10);
+        $this->target->setPosition(1, 1);
+        $this->target->setSize(20, 10);
+        $this->target->clear();
 
-        $this->assertCount(12, $target->getBuffer());
-        $this->assertCount(22, $target->getBuffer()[0]);
+        $this->assertCount(12, $this->target->getBuffer());
+        $this->assertCount(22, $this->target->getBuffer()[0]);
     }
 
     /**
@@ -36,11 +65,13 @@ class ViewTest extends TestCase
      */
     public function shouldGetDefaultContentAndTitle(): void
     {
-        $target = new View(1, 1, 1, 1);
+        $this->target->setPosition(1, 1);
+        $this->target->setSize(1, 1);
+        $this->target->clear();
 
-        $this->assertSame('', $target->getContent());
-        $this->assertSame('', $target->getTitle());
-        $this->assertFalse($target->hasTitle());
+        $this->assertSame('', $this->target->getContent());
+        $this->assertSame('', $this->target->getTitle());
+        $this->assertFalse($this->target->hasTitle());
     }
 
     /**
@@ -48,11 +79,13 @@ class ViewTest extends TestCase
      */
     public function shouldBeOkayWhenSetContent(): void
     {
-        $target = new View(1, 1, 1, 1);
+        $this->target->setPosition(1, 1);
+        $this->target->setSize(1, 1);
+        $this->target->clear();
 
-        $target->setContent('whatever');
+        $this->target->setContent('whatever');
 
-        $this->assertSame('whatever', $target->getContent());
+        $this->assertSame('whatever', $this->target->getContent());
     }
 
     /**
@@ -60,13 +93,15 @@ class ViewTest extends TestCase
      */
     public function shouldHasTitleAfterSetTitle(): void
     {
-        $target = new View(1, 1, 1, 1);
+        $this->target->setPosition(1, 1);
+        $this->target->setSize(1, 1);
+        $this->target->clear();
 
         // Alias for setTitle() method
-        $target->title('whatever');
+        $this->target->title('whatever');
 
-        $this->assertSame('whatever', $target->getTitle());
-        $this->assertTrue($target->hasTitle());
+        $this->assertSame('whatever', $this->target->getTitle());
+        $this->assertTrue($this->target->hasTitle());
     }
 
     /**
@@ -74,11 +109,13 @@ class ViewTest extends TestCase
      */
     public function shouldBeOkayWhenWriteBuffer(): void
     {
-        $target = new View(1, 1, 1, 1);
+        $this->target->setPosition(1, 1);
+        $this->target->setSize(1, 1);
+        $this->target->clear();
 
-        $target->write(1, 1, 'x');
+        $this->target->write(1, 1, 'x');
 
-        $this->assertSame(['x'], $target->getBuffer()[1][1]);
+        $this->assertSame(['x'], $this->target->getBuffer()[1][1]);
     }
 
     /**
@@ -88,8 +125,87 @@ class ViewTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $target = new View(1, 1, 1, 1);
+        $this->target->setPosition(1, 1);
+        $this->target->setSize(1, 1);
+        $this->target->clear();
 
-        $target->write(10, 10, 'x');
+        $this->target->write(10, 10, 'x');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldReturnDefaultBorderSettingAndContent(): void
+    {
+        $this->assertTrue($this->target->hasBorder());
+
+        $this->assertSame('┐', $this->target->getBorderChar(3));
+        $this->assertSame('│', $this->target->getBorderChar(1));
+        $this->assertSame('└', $this->target->getBorderChar(4));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldBeOkayWhenUseDiffBorder(): void
+    {
+        $this->target->useAsciiBorder();
+
+        $this->assertSame('+', $this->target->getBorderChar(3));
+        $this->assertSame('|', $this->target->getBorderChar(1));
+        $this->assertSame('+', $this->target->getBorderChar(4));
+
+        $this->target->useDefaultBorder();
+
+        $this->assertSame('┐', $this->target->getBorderChar(3));
+        $this->assertSame('│', $this->target->getBorderChar(1));
+        $this->assertSame('└', $this->target->getBorderChar(4));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldChangeOneBorderWhenCallSetBorder(): void
+    {
+        $this->target->setBorderChar(3, '+');
+
+        $this->assertSame('+', $this->target->getBorderChar(3));
+        $this->assertSame('│', $this->target->getBorderChar(1));
+        $this->assertSame('└', $this->target->getBorderChar(4));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldChangeBorderSettingWhenEnableAndDisable(): void
+    {
+        $this->target->disableBorder();
+
+        $this->assertFalse($this->target->hasBorder());
+
+        $this->target->enableBorder();
+
+        $this->assertTrue($this->target->hasBorder());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldReturnCorrectSizeWhenSetTheSize(): void
+    {
+        $this->target->setSize(20, 10);
+
+        $this->assertSame([20, 10], $this->target->size());
+        $this->assertSame([22, 12], $this->target->frameSize());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldReturnCorrectPositionWhenSetThePosition(): void
+    {
+        $this->target->setPosition(5, 15);
+
+        $this->assertSame([5, 15], $this->target->position());
     }
 }

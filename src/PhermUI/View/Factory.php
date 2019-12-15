@@ -3,6 +3,7 @@
 namespace MilesChou\PhermUI\View;
 
 use MilesChou\PhermUI\PhermUI;
+use Psr\Container\ContainerInterface;
 
 class Factory
 {
@@ -12,10 +13,17 @@ class Factory
     private $phermUI;
 
     /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * @param ContainerInterface $container
      * @param PhermUI $phermUI
      */
-    public function __construct(PhermUI $phermUI)
+    public function __construct(ContainerInterface $container, PhermUI $phermUI)
     {
+        $this->container = $container;
         $this->phermUI = $phermUI;
     }
 
@@ -29,27 +37,12 @@ class Factory
      */
     public function createView(string $name, int $x, int $y, int $sizeX, int $sizeY): View
     {
-        $view = new View($x, $y, $sizeX, $sizeY);
+        $view = new View($this->container);
+        $view->setPosition($x, $y);
+        $view->setSize($sizeX, $sizeY);
+        $view->clear();
 
-        $this->phermUI->addView($view);
-
-        return $view;
-    }
-
-    /**
-     * @param string $name
-     * @param int $x
-     * @param int $y
-     * @param int $sizeX
-     * @param int $sizeY
-     * @param array $items
-     * @return SelectView
-     */
-    public function createSelectView(string $name, int $x, int $y, int $sizeX, int $sizeY, $items = []): SelectView
-    {
-        $view = new SelectView($x, $y, $sizeX, $sizeY, $items);
-
-        $this->phermUI->addView($view);
+        $this->phermUI->addView($name, $view);
 
         return $view;
     }

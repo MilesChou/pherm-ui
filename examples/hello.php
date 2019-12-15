@@ -1,12 +1,21 @@
 <?php
 
 use Illuminate\Container\Container;
-use MilesChou\Pherm\Terminal;
 use MilesChou\PhermUI\PhermUI;
+use Phoole\Event\Dispatcher;
+use Phoole\Event\Provider;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\ListenerProviderInterface;
 
 include_once __DIR__ . '/../vendor/autoload.php';
 
-$cui = new PhermUI(new Terminal(new Container()));
+$listenerProvider = new Provider();
+
+$container = new Container();
+$container->bind(ListenerProviderInterface::class, Provider::class);
+$container->bind(EventDispatcherInterface::class, Dispatcher::class);
+
+$cui = new PhermUI($container);
 
 $cui->viewFactory()
     ->createView('view1', 10, 10, 40, 5)

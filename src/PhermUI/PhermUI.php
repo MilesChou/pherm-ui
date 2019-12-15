@@ -6,12 +6,25 @@ use BadMethodCallException;
 use MilesChou\Pherm\Terminal;
 use MilesChou\PhermUI\View\Factory as ViewFactory;
 use MilesChou\PhermUI\View\ViewInterface;
+use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\ListenerProviderInterface;
 
 /**
  * @mixin Terminal
  */
-class PhermUI
+class PhermUI implements EventDispatcherInterface, ListenerProviderInterface
 {
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * @var Drawer
+     */
+    private $drawer;
+
     /**
      * @var Terminal
      */
@@ -23,16 +36,16 @@ class PhermUI
     private $views = [];
 
     /**
-     * @var Drawer
+     * @param ContainerInterface $container
      */
-    private $drawer;
-
-    public function __construct(Terminal $terminal)
+    public function __construct(ContainerInterface $container)
     {
-        $this->terminal = $terminal;
+        $this->container = $container;
+
+        $this->terminal = new Terminal($container);
         $this->terminal->bootstrap();
 
-        $this->drawer = new Drawer($terminal);
+        $this->drawer = new Drawer($this->terminal);
     }
 
     public function __call($method, $arguments)
@@ -45,11 +58,12 @@ class PhermUI
     }
 
     /**
+     * @param string $name
      * @param ViewInterface $view
      */
-    public function addView(ViewInterface $view): void
+    public function addView(string $name, ViewInterface $view): void
     {
-        $this->views[] = $view;
+        $this->views[$name] = $view;
     }
 
     /**
@@ -89,6 +103,22 @@ class PhermUI
      */
     public function viewFactory(): ViewFactory
     {
-        return new ViewFactory($this);
+        return new ViewFactory($this->container, $this);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function dispatch(object $event)
+    {
+        // TODO: Implement dispatch() method.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getListenersForEvent(object $event): iterable
+    {
+        // TODO: Implement getListenersForEvent() method.
     }
 }
