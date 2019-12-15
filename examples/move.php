@@ -30,10 +30,6 @@ $provider->attach(function (ViewChange $viewChange) use ($cui) {
     $cui->drawer()->draw($viewChange->view);
 });
 
-/** @var Dispatcher $e */
-$e = $container->get(EventDispatcherInterface::class);
-$e->dispatch(new ViewChange($view));
-
 $cui->run();
 
 $terminal = $cui->getTerminal();

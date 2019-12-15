@@ -12,7 +12,9 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 class View implements ViewInterface
 {
     use BufferTrait;
-    use SizeAwareTrait;
+    use SizeAwareTrait {
+        setSize as private setSizeRaw;
+    }
 
     /**
      * @var bool
@@ -257,13 +259,15 @@ class View implements ViewInterface
     /**
      * @param int $width
      * @param int $height
+     * @return View
      */
-    public function setSize(int $width, int $height): void
+    public function setSize(int $width, int $height): View
     {
-        $this->width = $width;
-        $this->height = $height;
+        $this->setSizeRaw($width, $height);
 
         $this->eventDispatcher->dispatch(new ViewChange($this));
+
+        return $this;
     }
 
     /**
