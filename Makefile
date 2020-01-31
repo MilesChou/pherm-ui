@@ -1,7 +1,5 @@
 #!/usr/bin/make -f
 
-PHP_MAJOR_VERSION := $(shell php -r "echo PHP_MAJOR_VERSION;")
-
 .PHONY: clean clean-all check test analyse coverage
 
 # ---------------------------------------------------------------------
