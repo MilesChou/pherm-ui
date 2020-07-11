@@ -12,7 +12,7 @@ interface ViewInterface
     public function clear(): ViewInterface;
 
     /**
-     * @return array
+     * @return array<int>
      */
     public function frameSize(): array;
 
@@ -23,7 +23,7 @@ interface ViewInterface
     public function getBorderChar(int $key): string;
 
     /**
-     * @return array
+     * @return array<int, mixed>
      */
     public function getBuffer(): array;
 
@@ -48,7 +48,7 @@ interface ViewInterface
     public function hasTitle(): bool;
 
     /**
-     * @return array
+     * @return array<int>
      */
     public function position(): array;
 
@@ -59,7 +59,7 @@ interface ViewInterface
     public function setTitle(string $title): ViewInterface;
 
     /**
-     * @return array
+     * @return array<int>
      */
     public function size(): array;
 

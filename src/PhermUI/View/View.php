@@ -22,12 +22,12 @@ class View implements ViewInterface
     private $border = true;
 
     /**
-     * @var array [horizontal, vertical, top-left, top-right, bottom-left, bottom-right]
+     * @var array<string> [horizontal, vertical, top-left, top-right, bottom-left, bottom-right]
      */
     private $borderChars = ['─', '│', '┌', '┐', '└', '┘'];
 
     /**
-     * @var array
+     * @var array<int, mixed>
      */
     private $buffer = [];
 
@@ -99,7 +99,7 @@ class View implements ViewInterface
     }
 
     /**
-     * @return array
+     * @return array<int>
      */
     public function frameSize(): array
     {
@@ -219,7 +219,7 @@ class View implements ViewInterface
     }
 
     /**
-     * @return array
+     * @inheritDoc
      */
     public function position(): array
     {
@@ -227,17 +227,12 @@ class View implements ViewInterface
     }
 
     /**
-     * @param int|array $key
-     * @param string $char
+     * @param array<string> $chars
      * @return View
      */
-    public function setBorderChar($key, $char = null): View
+    public function setBorderChars(array $chars): View
     {
-        if (is_array($key)) {
-            $this->borderChars = $key;
-        } else {
-            $this->borderChars[$key] = $char;
-        }
+        $this->borderChars = $chars;
 
         $this->eventDispatcher->dispatch(new ViewChange($this));
 
@@ -275,7 +270,7 @@ class View implements ViewInterface
      */
     public function useAsciiBorder(): View
     {
-        return $this->setBorderChar(['-', '|', '+', '+', '+', '+']);
+        return $this->setBorderChars(['-', '|', '+', '+', '+', '+']);
     }
 
     /**
@@ -283,7 +278,7 @@ class View implements ViewInterface
      */
     public function useDefaultBorder(): View
     {
-        return $this->setBorderChar(['─', '│', '┌', '┐', '└', '┘']);
+        return $this->setBorderChars(['─', '│', '┌', '┐', '└', '┘']);
     }
 
     private function resetBuffer(): void

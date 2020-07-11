@@ -165,18 +165,6 @@ class ViewTest extends TestCase
     /**
      * @test
      */
-    public function shouldChangeOneBorderWhenCallSetBorder(): void
-    {
-        $this->target->setBorderChar(3, '+');
-
-        $this->assertSame('+', $this->target->getBorderChar(3));
-        $this->assertSame('│', $this->target->getBorderChar(1));
-        $this->assertSame('└', $this->target->getBorderChar(4));
-    }
-
-    /**
-     * @test
-     */
     public function shouldChangeBorderSettingWhenEnableAndDisable(): void
     {
         $this->target->disableBorder();

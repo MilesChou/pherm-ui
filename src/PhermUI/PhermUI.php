@@ -48,6 +48,11 @@ class PhermUI implements EventDispatcherInterface, ListenerProviderInterface
         $this->drawer = new Drawer($this->terminal);
     }
 
+    /**
+     * @param string $method
+     * @param array<mixed> $arguments
+     * @return mixed
+     */
     public function __call($method, $arguments)
     {
         if (method_exists($this->terminal, $method)) {
@@ -111,14 +116,15 @@ class PhermUI implements EventDispatcherInterface, ListenerProviderInterface
      */
     public function dispatch(object $event)
     {
-        // TODO: Implement dispatch() method.
+        return $event;
     }
 
     /**
-     * @inheritDoc
+     * @return iterable<callable>
      */
     public function getListenersForEvent(object $event): iterable
     {
         // TODO: Implement getListenersForEvent() method.
+        return [];
     }
 }

@@ -1,7 +1,7 @@
 {
     "name": "mileschou/pherm-ui",
     "license": "MIT",
-    "description": "",
+    "description": "Pherm UI",
     "type": "library",
     "authors": [
         {
@@ -16,16 +16,15 @@
     },
     "require-dev": {
         "amphp/amp": "^2.4",
-        "codacy/coverage": "^1.4",
-        "illuminate/container": "^6",
-        "phpstan/phpstan": "^0.11.8",
-        "phpunit/phpunit": "^7 | ^8",
+        "illuminate/container": "^7.19",
+        "phpstan/phpstan": "^0.12.32",
+        "phpunit/phpunit": "^8.5",
         "squizlabs/php_codesniffer": "^3.5",
-        "symfony/var-dumper": "^5.0"
+        "symfony/var-dumper": "^5.1"
     },
     "autoload": {
         "psr-4": {
-            "MilesChou\\": "src"
+            "MilesChou\\PhermUI\\": "src/PhermUI"
         }
     },
     "autoload-dev": {
@@ -34,6 +33,11 @@
         }
     },
     "config": {
+        "optimize-autoloader": true,
+        "platform": {
+            "php": "7.2.5"
+        },
+        "preferred-install": "dist",
         "sort-packages": true
     }
 }

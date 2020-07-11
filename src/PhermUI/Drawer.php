@@ -152,7 +152,7 @@ class Drawer
      * @param ViewInterface $view
      * @param int $y
      * @param int $x
-     * @param string|array $chars
+     * @param string|array<string> $chars
      */
     private function write(ViewInterface $view, int $x, int $y, $chars): void
     {
